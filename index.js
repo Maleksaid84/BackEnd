@@ -112,13 +112,18 @@ app.post('/addproduct', async (req, res) => {
 // Endpoint to get all products
 
 app.get("/allproducts", async (req, res) => {
-  try {
-    const products = await Product.find({});
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch products", error });
-  }
-});
+    try {
+      const products = await Product.find({});
+      // Mappez les produits et ajoutez l'URL complète de l'image pour chaque produit
+      const productsWithImageUrl = products.map(product => ({
+        ...product.toObject(), // Convertissez le produit en un objet simple pour pouvoir le modifier
+        image: `https://malek.onrender.com/allproducts/${product.image}` // Remplacez 'https://malek.onrender.com' par votre domaine correct
+      }));
+      res.json(productsWithImageUrl);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch products", error });
+    }
+  });
 
 // Endpoint pour supprimer un produit
 app.delete('/removeproduct/:id', async (req, res) => {
